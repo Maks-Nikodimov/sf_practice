@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-18.04"
+  config.vm.define :ubuntu1804
+  config.vm.box_check_update = false
+  config.ssh.insert_key = false
+  config.vm.provider "hyperv" do |vb|
+    vb.memory = "2048"
+    vb.cpus = 1
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.provision "file", source: "./file/empty_file", destination: "/tmp//empty_file"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+	apt-get -y install python3-dev libpq-dev python3-pip
+	pip3 install psycopg2-binary django
+  SHELL
+end
